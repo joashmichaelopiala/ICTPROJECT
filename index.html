@@ -8,6 +8,43 @@
 
 <style>
 
+/* --------------- */
+
+/* GUY IMAGE */
+.guy1 {
+    background-image: url('https://i.imgur.com/vyHM3au.png');
+    background-size: 90%;
+    background-position: 50% 60%; /* 👈 starts LOWER */
+    background-repeat: no-repeat;
+    transition: 0.5s ease;
+}
+
+/* GIRL (placeholder) */
+.girl2 {
+    background-image: url('https://i.imgur.com/pwC3tW6.png');
+    background-size: 150%;
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
+    transition: 0.5s ease;
+}
+
+.banner {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 15px 0;
+display: block;
+}
+
+.gallery img {
+    width: 48%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* ------------------- */
 /* BASE */
 body {
     margin: 0;
@@ -33,24 +70,14 @@ nav a {
     text-decoration: none;
     color: #333;
     font-size: 14px;
-    position: relative;
-    user-select: none;
     cursor: pointer;
 }
 
-nav a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 0%;
-    height: 1px;
-    background: #333;
-    transition: 0.3s;
-}
-
-nav a:hover::after {
-    width: 100%;
+/* LOCK NAV */
+nav.locked a:not(.home-btn):not([onclick*="gallery"]):not([onclick*="contact"]) {
+    opacity: 0.3;
+    pointer-events: none;
+    filter: grayscale(100%);
 }
 
 /* SECTIONS */
@@ -61,7 +88,6 @@ section {
     height: calc(100% - 60px);
     padding: 60px 20px;
     overflow-y: auto;
-
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.6s ease;
@@ -101,13 +127,6 @@ p { line-height: 1.8; }
     color: #777;
 }
 
-/* IMAGE */
-.section-img {
-    width: 100%;
-    border-radius: 12px;
-    margin: 15px 0;
-}
-
 /* GALLERY */
 .gallery {
     display: flex;
@@ -115,19 +134,59 @@ p { line-height: 1.8; }
     gap: 10px;
 }
 
-.gallery img {
-    width: 150px;
-    border-radius: 10px;
+/* CHARACTER SELECT */
+.char-select {
+    display: flex;
+    gap: 20px;
+    margin-top: 25px;
 }
 
-/* CONTACT */
-.contact {
-    background: #eee;
-    padding: 15px;
-    border-radius: 10px;
+.char-card {
+    flex: 1;
+    height: 200px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.4s;
+
+    background-color: #ddd;
+
+    position: relative; /* ✅ needed */
+    overflow: hidden;   /* ✅ keeps overlay inside */
 }
 
-/* 🧩 PAPER PANEL TRANSITION */
+/* DARK OVERLAY */
+.char-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45); /* darkness */
+    transition: 0.4s;
+    z-index: 1;
+}
+
+/* REMOVE DARKNESS ON HOVER */
+.char-card:hover::before {
+    background: rgba(0,0,0,0);
+}
+
+/* SLIDE IMAGE UP */
+.char-card:hover.guy1 {
+    background-position: 50% 10%; /* 👈 moves UP */
+}
+.char-card:hover.girl2 {
+    background-position: 50% 30%;
+ }
+
+/* HOVER EFFECT */
+.char-card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* PANEL TRANSITION */
 #panel-transition {
     position: fixed;
     inset: 0;
@@ -145,28 +204,81 @@ p { line-height: 1.8; }
     transition: transform 0.9s ease;
 }
 
-/* 👇 CHANGE THESE IMAGES */
 .panel.left {
     left: 0;
     transform: translateX(-100%);
-    background-image: url('https://www.onlygfx.com/wp-content/uploads/2020/02/crumpled-up-ball-paper-2.png');
+    background: linear-gradient(to bottom, #000, #444);
 }
 
 .panel.right {
     right: 0;
     transform: translateX(100%);
-    background-image: url('https://www.onlygfx.com/wp-content/uploads/2020/02/crumpled-up-ball-paper-2.png');
+    background: linear-gradient(to bottom, #000, #444);
 }
 
-.panel.active.left {
-    transform: translateX(0);
+.gallery img {
+    transition: 0.3s;
 }
 
-.panel.active.right {
-    transform: translateX(0);
+.gallery img:hover {
+    transform: scale(1.05);
 }
 
-/* ✍️ TYPEWRITER */
+.panel.active.left { transform: translateX(0); }
+.panel.active.right { transform: translateX(0); }
+
+/* MEMORY OVERLAY */
+#memory-overlay {
+    position: fixed;
+    inset: 0;
+    background: #e8e6e3; /* soft light grey */
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3000;
+    transition: opacity 0.6s ease;
+}
+
+#memory-overlay.active {
+    opacity: 1;
+}
+
+.memory-title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    border-right: 2px solid #222;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.memory-quote {
+    font-size: 18px;
+    text-align: center;
+    max-width: 500px;
+    border-right: 2px solid #222;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.memory-jp {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.6;
+}
+
+.img-fixed {
+    width: 100%;
+    height: 260px;
+    background: #d9d7d4;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+/* TYPE */
 .type {
     border-right: 2px solid #333;
     white-space: nowrap;
@@ -178,8 +290,8 @@ p { line-height: 1.8; }
 
 <body>
 
-<nav>
-<a onclick="switchSection('home')">Home</a>
+<nav id="nav" class="locked">
+<a class="home-btn" onclick="switchSection('home')">Home</a>
 <a onclick="switchSection('about')">About</a>
 <a onclick="switchSection('career')">Career</a>
 <a onclick="switchSection('future')">Reflection</a>
@@ -187,161 +299,234 @@ p { line-height: 1.8; }
 <a onclick="switchSection('contact')">Contact</a>
 </nav>
 
-<!-- PANEL TRANSITION -->
 <div id="panel-transition">
 <div class="panel left"></div>
 <div class="panel right"></div>
 </div>
 
+<div id="memory-overlay">
+    <div class="memory-title"></div>
+    <div class="memory-quote"></div>
+    <div class="memory-jp"></div>
+</div>
+
 <!-- HOME -->
 <section id="home" class="active">
 <div class="content">
+<h1>Looking Back</h1>
 
-<h1 class="type" data-text="Looking Back"></h1>
 <div class="img-placeholder">[ BANNER IMAGE ]</div>
-<p class="type" data-text="This website tells the story of two individuals — their past, their present, and the future they are building."></p>
 
+<p>This website tells the story of two individuals — their past, their present, and the future they are building.</p>
+
+<div class="char-select">
+    <div class="char-card guy1" onclick="selectCharacter('guy')"></div>
+    <div class="char-card girl2" onclick="selectCharacter('girl')"></div>
 </div>
+
+</div> <!-- ✅ THIS WAS MISSING -->
 </section>
 
 <!-- ABOUT -->
 <section id="about">
 <div class="content">
-
-<h1 class="type" data-text="About Us"></h1>
-
-<h2>Guy1</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Write your story here. Past, present, growth."></p>
-
-<h2>Girl2</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Write her journey, personality, and strengths."></p>
-
+<h1 class="type" id="about-title"></h1>
+<div id="about-content"></div>
 </div>
 </section>
 
 <!-- CAREER -->
 <section id="career">
 <div class="content">
-
-<h1 class="type" data-text="Our Careers"></h1>
-
-<h2>Guy1</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Explain your career path and why you chose it."></p>
-
-<h2>Girl2</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Explain her career and future goals."></p>
-
+<h1 class="type" id="career-title"></h1>
+<div id="career-content"></div>
 </div>
 </section>
 
 <!-- FUTURE -->
 <section id="future">
 <div class="content">
-
-<h1 class="type" data-text="10 Years Later"></h1>
-
-<h2>Guy1</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Describe your future self."></p>
-
-<h2>Girl2</h2>
-<div class="img-placeholder">[ IMAGE ]</div>
-<p class="type" data-text="Describe her future self."></p>
-
+<h1 class="type" id="future-title"></h1>
+<div id="future-content"></div>
 </div>
 </section>
 
 <!-- GALLERY -->
 <section id="gallery">
 <div class="content">
-
-<h1 class="type" data-text="Gallery"></h1>
-
-<div class="gallery">
-<img src="images/img1.jpg">
-<img src="images/img2.jpg">
-<img src="images/img3.jpg">
-</div>
-
+<h1 class="type" id="gallery-title"></h1>
+<div id="gallery-content"></div>
 </div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
 <div class="content">
-
-<h1 class="type" data-text="Contact"></h1>
-
+<h1>Contact</h1>
 <div class="contact">
 <p>etwhiteside0705lag@student.fatima.edu.ph</p>
 <p>jbopiala0077lag@student.fatima.edu.ph</p>
 </div>
-
 </div>
 </section>
 
 <script>
 
+let current = document.querySelector('.active');
+let currentChar = null;
+
 const leftPanel = document.querySelector('.panel.left');
 const rightPanel = document.querySelector('.panel.right');
+const nav = document.getElementById("nav");
 
-let current = document.querySelector('.active');
+/* MEMORY */
+const overlay = document.getElementById("memory-overlay");
+const titleEl = document.querySelector(".memory-title");
+const quoteEl = document.querySelector(".memory-quote");
+const jpEl = document.querySelector(".memory-jp");
 
-function switchSection(id) {
-    if (current.id === id) return;
+const quotes = [
+["Drawing is fun.","絵を描くのは楽しい。"],
+["I want to get better every day.","毎日もっと上手くなりたい。"],
+["We make a good team.","私たちはいいチームだね。"],
+["You inspire me.","あなたは私の刺激になる。"],
+["Practice makes progress.","練習は上達につながる。"]
+];
 
-    const next = document.getElementById(id);
+/* DATA */
+const data = {
+    guy: {
+        aboutTitle: "About Me",
 
-    /* CLOSE (SLOW) */
-    leftPanel.classList.add('active');
-    rightPanel.classList.add('active');
+        about: `
+        <h2>Joash Michael</h2>
 
-    setTimeout(() => {
+        <img src="https://i.imgur.com/vyHM3au.png" class="banner">
 
-        current.classList.remove('active');
-        next.classList.add('active');
-        current = next;
+        <p>My name is Joash Michael B. Opiala, though most people call me Michael, Bboy, or sometimes Jamie. Growing up, I was more of a shut-in type of person. I preferred staying indoors rather than going out, but that didn’t mean I was doing nothing. Instead, I spent a lot of my time exploring my interests and building skills on my own.</p>
 
-        startTyping(next);
+        <p>One of the main things I got into was drawing. What started as just something to pass the time slowly turned into a real hobby that I genuinely enjoyed. I found comfort in it, and over time, I kept improving and expressing myself through art.</p>
 
-        /* OPEN (DELAYED REVEAL) */
-        setTimeout(() => {
-            leftPanel.classList.remove('active');
-            rightPanel.classList.remove('active');
-        }, 300);
+        <p>Alongside that, I also developed an interest in coding. At first, it was just curiosity, but it eventually became something I wanted to learn more deeply. It challenged me in a different way compared to art, making me think logically and creatively at the same time.</p>
 
-    }, 900); // slower close
+        <p>So even though I grew up mostly staying inside, I didn’t just sit around—I spent my time building two things I now consider important parts of who I am: coding and art.</p>
+        `,
+
+        careerTitle: "My Career",
+        career: `
+        <img src="https://i.imgur.com/vyHM3au.png" class="banner">
+        <p>I plan to pursue a career related to technology, especially in coding or software development. My interest in programming continues to grow as I learn more about how systems and applications work.</p>
+        `,
+
+        futureTitle: "My Future",
+        future: `
+<p>In the future, I see myself as someone who continues improving both in coding and art. I want to build projects, create meaningful work, and develop skills that allow me to express both logic and creativity.</p>
+`
+},  // ✅ CLOSE GUY OBJECT HERE
+
+girl: {
+    aboutTitle: "About Me",
+
+    about: `
+    <h2>Tyra Eunice Whiteside</h2>
+
+    <div class="img-fixed">[ HER IMAGE ]</div>
+
+    <p>Her story here.</p>
+    `,
+
+    careerTitle: "Her Career",
+    career: `
+    <div class="img-fixed">[ CAREER IMAGE ]</div>
+    <p>Her career path.</p>
+    `,
+
+    futureTitle: "Her Future",
+    future: `
+<div class="img-fixed">[ FUTURE IMAGE ]</div>
+<p>Her future vision.</p>
+`
 }
+};
 
-/* TYPEWRITER (SLOWER) */
-function startTyping(section) {
-    const elements = section.querySelectorAll('.type');
+const shared = {
+    galleryTitle: "Gallery",
+    gallery: `
+    <div class="gallery">
+        <img src="https://i.imgur.com/vyHM3au.png" style="width:48%; border-radius:10px;">
+        <img src="https://i.imgur.com/pwC3tW6.png" style="width:48%; border-radius:10px;">
+        <img src="https://i.imgur.com/vyHM3au.png" style="width:48%; border-radius:10px;">
+        <img src="https://i.imgur.com/pwC3tW6.png" style="width:48%; border-radius:10px;">
+    </div>
+    `
+};
 
-    elements.forEach(el => {
-        el.textContent = "";
-        const text = el.getAttribute("data-text");
-        let i = 0;
-
-        function type() {
-            if (i < text.length) {
-                el.textContent += text.charAt(i);
-                i++;
-                setTimeout(type, 45); // 🔥 slower typing
-            }
-        }
-
-        setTimeout(type, 200); // small delay before typing starts
-    });
+/* SELECT */
+function selectCharacter(char){
+    currentChar = char;
+    nav.classList.remove("locked");
+    loadContent();
+    switchSection('about');
 }
 
 /* LOAD */
-window.onload = () => {
-    startTyping(document.querySelector('.active'));
-};
+function loadContent(){
+    const d = data[currentChar];
+
+    document.getElementById("about-title").textContent = d.aboutTitle;
+    document.getElementById("career-title").textContent = d.careerTitle;
+    document.getElementById("future-title").textContent = d.futureTitle;
+document.getElementById("gallery-title").textContent = shared.galleryTitle;
+    
+    document.getElementById("about-content").innerHTML = d.about;
+    document.getElementById("career-content").innerHTML = d.career;
+    document.getElementById("future-content").innerHTML = d.future;
+document.getElementById("gallery-content").innerHTML = shared.gallery;
+   }
+
+/* SWITCH */
+function switchSection(id){
+    if(current.id===id) return;
+    if(!currentChar && id!=="home" && id!=="gallery" && id!=="contact") return;
+
+
+    const next=document.getElementById(id);
+
+    leftPanel.classList.add('active');
+    rightPanel.classList.add('active');
+
+    setTimeout(()=>{
+
+        overlay.classList.add("active");
+
+        const [en,jp]=quotes[Math.floor(Math.random()*quotes.length)];
+
+        titleEl.textContent = id.toUpperCase();
+        quoteEl.textContent = en;
+        jpEl.textContent = jp;
+
+        setTimeout(()=>{
+
+            overlay.classList.remove("active");
+
+            if(id==="home"){
+                currentChar=null;
+                nav.classList.add("locked");
+            }
+
+            current.classList.remove('active');
+            next.classList.add('active');
+            current=next;
+
+            setTimeout(()=>{
+                leftPanel.classList.remove('active');
+                rightPanel.classList.remove('active');
+            },300);
+
+        }, 800);
+
+    },900);
+}
 
 </script>
 
