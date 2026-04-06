@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Looking Back — Our Future Careers</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 
 <style>
@@ -28,6 +30,10 @@
     transition: 0.5s ease;
 }
 
+.contact {
+    user-select: text;
+}
+
 .banner {
     width: 100%;
     height: 250px;
@@ -45,12 +51,49 @@ display: block;
 }
 
 /* ------------------- */
+
+/* IMAGE VIEWER */
+#img-viewer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4); /* 40% dark */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 4000;
+    transition: opacity 0.3s ease;
+}
+
+#img-viewer.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#viewer-img {
+    max-width: 80%;
+    max-height: 80%;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
 /* BASE */
 body {
     margin: 0;
     font-family: 'Indie Flower', cursive;
     background: #f4f4f4;
     color: #222;
+}
+
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* NAV */
@@ -82,20 +125,23 @@ nav.locked a:not(.home-btn):not([onclick*="gallery"]):not([onclick*="contact"]) 
 
 /* SECTIONS */
 section {
-    position: absolute;
+display: none;
     top: 60px;
     width: 100%;
-    height: calc(100% - 60px);
-    padding: 60px 20px;
-    overflow-y: auto;
+    
+    padding: 80px 20px;
+    
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.35s ease-in-out;
+z-index: 0;
 }
 
 section.active {
+display: block;
     opacity: 1;
     pointer-events: auto;
+    z-index: 1; /* 👈 ADD THIS */
 }
 
 /* CONTENT */
@@ -155,6 +201,37 @@ p { line-height: 1.8; }
 
     position: relative; /* ✅ needed */
     overflow: hidden;   /* ✅ keeps overlay inside */
+}
+
+.img-wrap {
+    position: relative;
+    width: 48%;
+}
+
+.img-wrap img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* CREDIT TEXT */
+.credit {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 12px;
+    color: white;
+    background: rgba(0,0,0,0.6);
+    padding: 4px 8px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+/* SHOW ON HOVER ONLY FOR SPECIAL */
+.img-wrap.special:hover .credit {
+    opacity: 1;
 }
 
 /* DARK OVERLAY */
@@ -285,6 +362,31 @@ p { line-height: 1.8; }
     overflow: hidden;
 }
 
+@media (max-width: 600px) {
+
+    .char-select {
+        flex-direction: column;
+    }
+
+    .gallery img {
+        width: 100%;
+    }
+
+    .credit {
+        opacity: 1;
+    }
+
+    section {
+        padding: 70px 15px;
+    }
+
+    nav a {
+        margin: 0 8px;
+        font-size: 13px;
+    }
+
+}
+
 </style>
 </head>
 
@@ -317,7 +419,13 @@ p { line-height: 1.8; }
 
 <div class="img-placeholder">[ BANNER IMAGE ]</div>
 
-<p>This website tells the story of two individuals — their past, their present, and the future they are building.</p>
+<p>
+This is a story about looking back — at the interests we discovered, the skills we slowly built, and the moments that shaped who we are today.
+</p>
+
+<p>
+From coding to digital art, our paths continue to grow with us. This website is not just about our future careers, but about the journey that leads us there, one step at a time.
+</p>
 
 <div class="char-select">
     <div class="char-card guy1" onclick="selectCharacter('guy')"></div>
@@ -370,10 +478,29 @@ p { line-height: 1.8; }
 </div>
 </section>
 
+<div id="img-viewer" onclick="closeViewer(event)">
+    <img id="viewer-img">
+</div>
+
 <script>
+
+const viewer = document.getElementById("img-viewer");
+const viewerImg = document.getElementById("viewer-img");
+
+function openViewer(src){
+    viewerImg.src = src;
+    viewer.classList.add("active");
+}
+
+function closeViewer(e){
+    if(e.target.id !== "viewer-img"){
+        viewer.classList.remove("active");
+    }
+}
 
 let current = document.querySelector('.active');
 let currentChar = null;
+let isTransitioning = false;
 
 const leftPanel = document.querySelector('.panel.left');
 const rightPanel = document.querySelector('.panel.right');
@@ -399,7 +526,7 @@ const data = {
         aboutTitle: "About Me",
 
         about: `
-        <h2>Joash Michael</h2>
+        <h2>Joash Michael B. Opiala</h2>
 
         <img src="https://i.imgur.com/vyHM3au.png" class="banner">
 
@@ -409,17 +536,26 @@ const data = {
 
         <p>Alongside that, I also developed an interest in coding. At first, it was just curiosity, but it eventually became something I wanted to learn more deeply. It challenged me in a different way compared to art, making me think logically and creatively at the same time.</p>
 
+<p>
+Through these experiences, I developed important skills such as drawing, creativity, basic programming, and problem-solving.
+</p>
         <p>So even though I grew up mostly staying inside, I didn’t just sit around—I spent my time building two things I now consider important parts of who I am: coding and art.</p>
+
+
         `,
 
         careerTitle: "My Career",
         career: `
         <img src="https://i.imgur.com/vyHM3au.png" class="banner">
-        <p>I plan to pursue a career related to technology, especially in coding or software development. My interest in programming continues to grow as I learn more about how systems and applications work.</p>
+        <p>I plan to pursue a career related to technology, especially in coding or software development. My interest in programming continues to grow as I learn more about how systems and applications work. The more I explore different programming languages and tools, the more I become fascinated by how technology can be used to solve real-world problems and improve people’s lives. At the same time, I am also interested in digital art, which allows me to express creativity and design visually engaging content.</p>
+
+<p>As I continue learning, I hope to strengthen my skills in problem-solving, logical thinking, and creativity, which are all essential in the field of technology. By combining my passion for programming and digital art, I aim to create applications and projects that are not only functional but also visually appealing and user-friendly. In the future, I see myself working on meaningful projects, collaborating with other developers and artists, and continuously improving my abilities while contributing to the advancement of modern technology.</p>
         `,
 
         futureTitle: "My Future",
         future: `
+<img src="https://i.imgur.com/vyHM3au.png" class="banner">
+
 <p>In the future, I see myself as someone who continues improving both in coding and art. I want to build projects, create meaningful work, and develop skills that allow me to express both logic and creativity.</p>
 `
 },  // ✅ CLOSE GUY OBJECT HERE
@@ -432,19 +568,21 @@ girl: {
 
     <div class="img-fixed">[ HER IMAGE ]</div>
 
-    <p>Her story here.</p>
+    <p>Hi! I’m Eunice, but people call me "Tyra", I'm a not so good student and an aspiring painter. I enjoy expressing myself through colors and creativity. Art allows me to communicate feelings that words sometimes cannot. I'm fond of painting and drawing, exploring different artstyles, observing nature and people for my inspiration. My strengths include creativity, patience, and attention to detail. I value self-expression, dedication, and continuous learning.</p>
     `,
 
-    careerTitle: "Her Career",
+    careerTitle: "My Dream Career",
     career: `
     <div class="img-fixed">[ CAREER IMAGE ]</div>
-    <p>Her career path.</p>
+    <p>My dream is to become a full-time professional painter. A painter creates artworks using different techniques, styles, and materials such as oil, acrylic, or watercolor. This job involves: creating original artworks, experimenting with colors and techniques, expressing emotions and ideas through paintings and sometimes displaying art in galleries or selling artworks. I chose painting as a career because it makes me feel free and inspired. It allows me to turn my imagination into something real and meaningful. The skills needed for this career is: creativity and imagination, patience and focus, knowledge of colors and techniques, practice and dedication.</p>
     `,
 
-    futureTitle: "Her Future",
+    futureTitle: "My Future",
     future: `
 <div class="img-fixed">[ FUTURE IMAGE ]</div>
-<p>Her future vision.</p>
+<p>10–15 years from now, I see myself as a successful painter with my own art style. I imagine having my artwork displayed in galleries and being recognized for my creativity.</p>
+
+<p>I will continue improving my skills, learning new techniques, and sharing my art with others. I hope to inspire people through my paintings and maybe even teach art someday.</p>
 `
 }
 };
@@ -452,13 +590,23 @@ girl: {
 const shared = {
     galleryTitle: "Gallery",
     gallery: `
-    <div class="gallery">
-        <img src="https://i.imgur.com/vyHM3au.png" style="width:48%; border-radius:10px;">
-        <img src="https://i.imgur.com/pwC3tW6.png" style="width:48%; border-radius:10px;">
-        <img src="https://i.imgur.com/vyHM3au.png" style="width:48%; border-radius:10px;">
-        <img src="https://i.imgur.com/pwC3tW6.png" style="width:48%; border-radius:10px;">
+<div class="gallery">
+
+    <div class="img-wrap">
+        <img src="https://i.imgur.com/vyHM3au.png" onclick="openViewer(this.src)">
     </div>
-    `
+
+    <div class="img-wrap">
+        <img src="https://i.imgur.com/pwC3tW6.png" onclick="openViewer(this.src)">
+    </div>
+
+    <div class="img-wrap special">
+        <img src="https://i.imgur.com/85KY8rn.jpg" onclick="openViewer(this.src)">
+        <span class="credit">By Tyra Eunice Whiteside</span>
+    </div>
+
+</div>
+`
 };
 
 /* SELECT */
@@ -466,7 +614,9 @@ function selectCharacter(char){
     currentChar = char;
     nav.classList.remove("locked");
     loadContent();
-    switchSection('about');
+
+    // 👇 USE FANCY TRANSITION
+    fancyTransition('about');
 }
 
 /* LOAD */
@@ -485,50 +635,130 @@ document.getElementById("gallery-content").innerHTML = shared.gallery;
    }
 
 /* SWITCH */
-function switchSection(id){
-    if(current.id===id) return;
-    if(!currentChar && id!=="home" && id!=="gallery" && id!=="contact") return;
 
+function fancyTransition(id){
+    if(isTransitioning) return;
+    isTransitioning = true;
+    const next = document.getElementById(id);
 
-    const next=document.getElementById(id);
+    // reset nav state immediately
+    if(id === "home"){
+        currentChar = null;
+        nav.classList.add("locked");
+    }
 
     leftPanel.classList.add('active');
     rightPanel.classList.add('active');
 
-    setTimeout(()=>{
+    setTimeout(() => {
 
         overlay.classList.add("active");
 
-        const [en,jp]=quotes[Math.floor(Math.random()*quotes.length)];
+        const [en, jp] = quotes[Math.floor(Math.random() * quotes.length)];
 
         titleEl.textContent = id.toUpperCase();
         quoteEl.textContent = en;
         jpEl.textContent = jp;
 
-        setTimeout(()=>{
+        setTimeout(() => {
 
             overlay.classList.remove("active");
 
-            if(id==="home"){
-                currentChar=null;
-                nav.classList.add("locked");
-            }
+            // 🔥 CLEAN SWITCH (important)
+            document.querySelectorAll("section").forEach(sec => {
+                sec.classList.remove("active");
+                sec.style.opacity = ""; // reset inline styles
+            });
 
-            current.classList.remove('active');
-            next.classList.add('active');
-            current=next;
+            next.classList.add("active");
+            current = next;
 
-            setTimeout(()=>{
+            setTimeout(() => {
                 leftPanel.classList.remove('active');
                 rightPanel.classList.remove('active');
-            },300);
+ isTransitioning = false;
+            }, 300);
 
         }, 800);
 
-    },900);
+    }, 900);
+
 }
 
+function simpleFade(id){
+    if(isTransitioning) return;
+    isTransitioning = true;
+
+    const next = document.getElementById(id);
+
+    document.querySelectorAll("section").forEach(sec => {
+        sec.style.opacity = "";
+    });
+
+    current.style.opacity = 0;
+
+    setTimeout(() => {
+
+        current.classList.remove('active');
+
+        next.classList.add('active');
+        next.style.opacity = 0;
+
+        next.offsetHeight; // force repaint
+
+        next.style.opacity = 1;
+
+        current = next;
+
+        setTimeout(() => {
+            isTransitioning = false;
+        }, 200);
+
+    }, 200);
+}
+
+function switchSection(id){
+    if(current.id === id) return;
+
+    // ✅ HANDLE HOME FIRST
+    if(id === "home"){
+    currentChar = null;
+    nav.classList.add("locked");
+
+    // clear old content
+    document.getElementById("about-content").innerHTML = "";
+    document.getElementById("career-content").innerHTML = "";
+    document.getElementById("future-content").innerHTML = "";
+document.getElementById("about-title").textContent = "";
+document.getElementById("career-title").textContent = "";
+document.getElementById("future-title").textContent = "";
+
+    simpleFade(id);
+    return;
+}
+
+    // Lock rule
+    if(!currentChar && id !== "gallery" && id !== "contact") return;
+
+    // Ensure gallery loads
+    if(id === "gallery"){
+        document.getElementById("gallery-title").textContent = shared.galleryTitle;
+        document.getElementById("gallery-content").innerHTML = shared.gallery;
+    }
+
+    // Normal fade
+    simpleFade(id);
+}
+
+document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+        viewer.classList.remove("active");
+    }
+});
+
 </script>
+
+
 
 </body>
 </html>
