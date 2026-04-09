@@ -10,18 +10,24 @@
 
 <style>
 
-/* ----------------- */
+.disclaimer {
+    font-size: 11px;
+    color: #999;
+    margin-top: -8px;
+    margin-bottom: 12px;
+    text-align: center;
+    font-style: italic;
+    letter-spacing: 0.3px;
+}
 
-/* GUY IMAGE */
 .guy1 {
     background-image: url('https://i.imgur.com/vyHM3au.png');
     background-size: 90%;
-    background-position: 50% 60%; /* 👈 starts LOWER */
+    background-position: 50% 60%; 
     background-repeat: no-repeat;
     transition: 0.5s ease;
 }
 
-/* GIRL (placeholder) */
 .girl2 {
     background-image: url('https://i.imgur.com/pwC3tW6.png');
     background-size: 150%;
@@ -49,13 +55,10 @@ display: block;
     border-radius: 10px;
 }
 
-/* ------------------- */
-
-/* IMAGE VIEWER */
 #img-viewer {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4); /* 40% dark */
+    background: rgba(0,0,0,0.4); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,12 +83,24 @@ display: block;
     user-drag: none;
 }
 
-/* BASE */
 body {
     margin: 0;
     font-family: 'Indie Flower', cursive;
     background: #f4f4f4;
     color: #222;
+}
+.content {
+    max-width: 720px;
+    margin: auto;
+
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+
+    padding: 28px;
+    border-radius: 16px;
+
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    margin-top: 20px;
 }
 
 * {
@@ -95,7 +110,6 @@ body {
     user-select: none;
 }
 
-/* NAV */
 nav {
     position: fixed;
     width: 100%;
@@ -115,14 +129,12 @@ nav a {
     cursor: pointer;
 }
 
-/* LOCK NAV */
 nav.locked a:not(.home-btn):not([onclick*="gallery"]):not([onclick*="contact"]) {
     opacity: 0.3;
     pointer-events: none;
     filter: grayscale(100%);
 }
 
-/* SECTIONS */
 section {
 display: none;
     top: 60px;
@@ -132,26 +144,40 @@ display: none;
     
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.5s cubic-bezier(.4,0,.2,1);
 z-index: 0;
 position: relative;
 }
 
 section.active {
+transform: translateY(0);
 display: block;
     opacity: 1;
     pointer-events: auto;
-    z-index: 1; /* 👈 ADD THIS */
+    z-index: 1; 
 }
 
-/* CONTENT */
 .content {
     max-width: 720px;
     margin: auto;
 }
 
-/* TEXT */
-h1 { font-size: 30px; }
+h1 {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+h1::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #ff9eb5;
+    margin-top: 8px;
+    border-radius: 2px;
+}
+
 h2 {
     margin-top: 30px;
     border-left: 3px solid #aaa;
@@ -160,7 +186,6 @@ h2 {
 
 p { line-height: 1.8; }
 
-/* IMAGE PLACEHOLDER */
 .img-placeholder {
     width: 100%;
     height: 220px;
@@ -173,14 +198,12 @@ p { line-height: 1.8; }
     color: #777;
 }
 
-/* GALLERY */
 .gallery {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-/* CHARACTER SELECT */
 .char-select {
     display: flex;
     gap: 20px;
@@ -210,7 +233,7 @@ p { line-height: 1.8; }
 
 .char-card.guy1,
 .char-card.girl2 {
-    background-color: #ccc; /* fallback so you SEE something */
+    background-color: #ccc; /* fallback lang if wala */
 }
 
 .img-wrap {
@@ -225,7 +248,6 @@ p { line-height: 1.8; }
     border-radius: 10px;
 }
 
-/* CREDIT TEXT */
 .credit {
     position: absolute;
     bottom: 8px;
@@ -239,41 +261,35 @@ p { line-height: 1.8; }
     transition: 0.3s;
 }
 
-/* SHOW ON HOVER ONLY FOR SPECIAL */
 .img-wrap.special:hover .credit {
     opacity: 1;
 }
 
-/* DARK OVERLAY */
 .char-card::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.45); /* darkness */
+    background: rgba(0,0,0,0.45); 
     transition: 0.4s;
     z-index: 0;
 }
 
-/* REMOVE DARKNESS ON HOVER */
 .char-card:hover::before {
     background: rgba(0,0,0,0);
 }
 
-/* SLIDE IMAGE UP */
 .char-card:hover.guy1 {
-    background-position: 50% 10%; /* 👈 moves UP */
+    background-position: 50% 10%; 
 }
 .char-card:hover.girl2 {
     background-position: 50% 30%;
  }
 
-/* HOVER EFFECT */
 .char-card:hover {
     transform: scale(1.08);
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* PANEL TRANSITION */
 #panel-transition {
     position: fixed;
     inset: 0;
@@ -288,19 +304,21 @@ p { line-height: 1.8; }
     top: 0;
     background-size: cover;
     background-position: center;
-    transition: transform 0.9s ease;
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
 }
 
 .panel.left {
     left: 0;
     transform: translateX(-100%);
-    background: linear-gradient(to bottom, #000, #444);
+    background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+    backdrop-filter: blur(6px);
 }
 
 .panel.right {
     right: 0;
     transform: translateX(100%);
-    background: linear-gradient(to bottom, #000, #444);
+    background: linear-gradient(to left, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+    backdrop-filter: blur(6px);
 }
 
 .gallery img {
@@ -314,11 +332,11 @@ p { line-height: 1.8; }
 .panel.active.left { transform: translateX(0); }
 .panel.active.right { transform: translateX(0); }
 
-/* MEMORY OVERLAY */
 #memory-overlay {
     position: fixed;
     inset: 0;
-    background: #e8e6e3; /* soft light grey */
+    background: rgba(255,255,255,0.85);
+backdrop-filter: blur(10px);
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -365,6 +383,48 @@ p { line-height: 1.8; }
     margin: 15px 0;
 }
 
+#sakura-container {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.sakura {
+    position: absolute;
+    top: -20px;
+filter: blur(0.3px);
+
+    width: 14px;
+    height: 10px;
+
+    background: linear-gradient(135deg, #ffd1dc, #ff9eb5);
+    border-radius: 60% 40% 60% 40%;
+
+    opacity: 0.8;
+
+    transform: rotate(0deg);
+
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-20px) translateX(0px) rotate(0deg);
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: translateY(50vh) translateX(30px) rotate(180deg);
+    }
+
+    100% {
+        transform: translateY(110vh) translateX(-40px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
 @media (max-width: 600px) {
 
     .char-select {
@@ -380,24 +440,40 @@ p { line-height: 1.8; }
     }
 
     section {
-        padding: 70px 15px;
-    }
+    display: none;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(.4,0,.2,1);
+}
 
 .char-card {
         height: 180px;
 }
 
     nav a {
-        margin: 0 8px;
-        font-size: 13px;
-    }
+    margin: 0 14px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
 
+    font-weight: 600;
+    letter-spacing: 0.6px;
+
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+nav a:hover {
+    color: #000;
+    transform: translateY(-1px);
 }
 
 </style>
 </head>
 
 <body>
+
+<div id="sakura-container"></div>
 
 <nav id="nav" class="locked">
 <a class="home-btn" onclick="switchSection('home')">Home</a>
@@ -419,10 +495,11 @@ p { line-height: 1.8; }
     <div class="memory-jp"></div>
 </div>
 
-<!-- HOME -->
+
 <section id="home" class="active">
 <div class="content">
 <h1>Looking Back</h1>
+<h2>Joash Michael B. Opiala and Tyra Eunice Whiteside</h2>
 
 <div class="img-placeholder">[ BANNER IMAGE ]</div>
 
@@ -439,10 +516,9 @@ From coding to digital art, our paths continue to grow with us. This website is 
     <div class="char-card girl2" onclick="selectCharacter('girl')"></div>
 </div>
 
-</div> <!-- ✅ THIS WAS MISSING -->
+</div> 
 </section>
 
-<!-- ABOUT -->
 <section id="about">
 <div class="content">
 <h1 id="about-title"></h1>
@@ -450,7 +526,6 @@ From coding to digital art, our paths continue to grow with us. This website is 
 </div>
 </section>
 
-<!-- CAREER -->
 <section id="career">
 <div class="content">
 <h1 id="career-title"></h1>
@@ -458,7 +533,6 @@ From coding to digital art, our paths continue to grow with us. This website is 
 </div>
 </section>
 
-<!-- FUTURE -->
 <section id="future">
 <div class="content">
 <h1 id="future-title"></h1>
@@ -466,7 +540,6 @@ From coding to digital art, our paths continue to grow with us. This website is 
 </div>
 </section>
 
-<!-- GALLERY -->
 <section id="gallery">
 <div class="content">
 <h1 id="gallery-title"></h1>
@@ -474,7 +547,6 @@ From coding to digital art, our paths continue to grow with us. This website is 
 </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
 <div class="content">
 <h1>Contact</h1>
@@ -484,6 +556,7 @@ From coding to digital art, our paths continue to grow with us. This website is 
 </div>
 </div>
 </section>
+
 
 <div id="img-viewer" onclick="closeViewer(event)">
     <img id="viewer-img">
@@ -513,7 +586,6 @@ const leftPanel = document.querySelector('.panel.left');
 const rightPanel = document.querySelector('.panel.right');
 const nav = document.getElementById("nav");
 
-/* MEMORY */
 const overlay = document.getElementById("memory-overlay");
 const titleEl = document.querySelector(".memory-title");
 const quoteEl = document.querySelector(".memory-quote");
@@ -527,7 +599,6 @@ const quotes = [
 ["Practice makes progress.","練習は上達につながる。"]
 ];
 
-/* DATA */
 const data = {
     guy: {
         aboutTitle: "About Me",
@@ -565,7 +636,7 @@ Through these experiences, I developed important skills such as drawing, creativ
 
 <p>In the future, I see myself as someone who continues improving both in coding and art. I want to build projects, create meaningful work, and develop skills that allow me to express both logic and creativity.</p>
 `
-},  // ✅ CLOSE GUY OBJECT HERE
+},  
 
 girl: {
     aboutTitle: "About Me",
@@ -597,6 +668,9 @@ girl: {
 const shared = {
     galleryTitle: "Gallery",
     gallery: `
+<p class="disclaimer">
+Disclaimer: Some images are AI-generated. Credited ones are real and made by us.
+</p>
 <div class="gallery">
 
     <div class="img-wrap">
@@ -616,17 +690,14 @@ const shared = {
 `
 };
 
-/* SELECT */
 function selectCharacter(char){
     currentChar = char;
     nav.classList.remove("locked");
     loadContent();
 
-    // 👇 USE FANCY TRANSITION
-    fancyTransition('about');
+       fancyTransition('about');
 }
 
-/* LOAD */
 function loadContent(){
     const d = data[currentChar];
 
@@ -641,14 +712,13 @@ document.getElementById("gallery-title").textContent = shared.galleryTitle;
 document.getElementById("gallery-content").innerHTML = shared.gallery;
    }
 
-/* SWITCH */
-
 function fancyTransition(id){
     if(isTransitioning) return;
     isTransitioning = true;
     const next = document.getElementById(id);
 
-    // reset nav state immediately
+    // reset nav state immediately dito smthng samthng
+
     if(id === "home"){
         currentChar = null;
         nav.classList.add("locked");
@@ -671,10 +741,11 @@ function fancyTransition(id){
 
             overlay.classList.remove("active");
 
-            // 🔥 CLEAN SWITCH (important)
+ // hi sir
             document.querySelectorAll("section").forEach(sec => {
                 sec.classList.remove("active");
-                sec.style.opacity = ""; // reset inline styles
+                sec.style.opacity = ""; 
+
             });
 
             next.classList.add("active");
@@ -711,7 +782,7 @@ function simpleFade(id){
         next.classList.add('active');
         next.style.opacity = 0;
 
-        next.offsetHeight; // force repaint
+        next.offsetHeight; 
 
         next.style.opacity = 1;
 
@@ -727,12 +798,12 @@ function simpleFade(id){
 function switchSection(id){
     if(current.id === id) return;
 
-    // ✅ HANDLE HOME FIRST
     if(id === "home"){
     currentChar = null;
     nav.classList.add("locked");
 
-    // clear old content
+    // clear old content section heree
+
     document.getElementById("about-content").innerHTML = "";
     document.getElementById("career-content").innerHTML = "";
     document.getElementById("future-content").innerHTML = "";
@@ -744,16 +815,16 @@ document.getElementById("future-title").textContent = "";
     return;
 }
 
-    // Lock rule
+    // Lock lahw
+
     if(!currentChar && id !== "gallery" && id !== "contact") return;
 
-    // Ensure gallery loads
-    if(id === "gallery"){
+       if(id === "gallery"){
         document.getElementById("gallery-title").textContent = shared.galleryTitle;
         document.getElementById("gallery-content").innerHTML = shared.gallery;
     }
 
-    // Normal fade
+    
     simpleFade(id);
 }
 
@@ -762,6 +833,28 @@ document.addEventListener("keydown", e => {
         viewer.classList.remove("active");
     }
 });
+
+function createSakura(){
+    const sakura = document.createElement("div");
+    sakura.classList.add("sakura");
+
+    sakura.style.left = Math.random() * window.innerWidth + "px";
+
+    const size = Math.random() * 8 + 8;
+    sakura.style.width = size + "px";
+    sakura.style.height = size * 0.7 + "px";
+
+    sakura.style.animationDuration = (Math.random() * 5 + 5) + "s";
+    sakura.style.animationDelay = Math.random() * 2 + "s";
+
+    document.getElementById("sakura-container").appendChild(sakura);
+
+    setTimeout(() => sakura.remove(), 10000);
+const opacity = Math.random() * 0.5 + 0.5;
+sakura.style.opacity = opacity;
+}
+
+setInterval(createSakura, 300);
 
 </script>
 
